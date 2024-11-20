@@ -32,10 +32,38 @@ def intersectionAreaRect(rect1, rect2):
         return 0
     # вычисляем площадь пересечения
     return width * height
+def intersectionAreaMultiRect(rects):
+    # проверяем корректность каждого прямоугольника в списке
+    for i, rect in enumerate(rects):
+        if not isCorrectRect(rect):
+            raise RectCorrectError(f"{i + 1}й прямоугольник некоректный")
+    # начинаем с площади первого прямоугольника
+    total_area = 0
+    # перебираем все пары прямоугольников
+    for i in range(len(rects)):
+        for j in range(i + 1, len(rects)):
+            # вычисляем площадь пересечения для текущей пары прямоугольников
+            intersection_area = intersectionAreaRect(rects[i], rects[j])
+            total_area += intersection_area
+    return total_area
 # примеры использования
+rectangles = [
+    [(-3, 1), (9, 10)],
+    [(-7, 0), (13, 12)],
+    [(0, 0), (5, 5)],
+    [(2, 2), (7, 7)]
+]
 try:
-    print(intersectionAreaRect([(-3, 1), (9, 10)], [(-7, 0), (13, 12)]))  # выводит: Положительное число
-    print(intersectionAreaRect([(1, 1), (2, 2)], [(3, 0), (13, 1)]))      # выводит: 0
-    print(intersectionAreaRect([(1, 1), (2, 2)], [(3, 17), (13, 1)]))     # ожидается ошибка
+    result = intersectionAreaMultiRect(rectangles)
+    print(f"Уникальная площадь пересечения: {result}")  
+except RectCorrectError as e:
+    print(e)
+# пример с некорректным прямоугольником
+incorrect_rectangles = [
+    [(-3, 1), (9, 10)],
+    [(3, 17), (13, 1)]  # некорректный прямоугольник
+]
+try:
+    intersectionAreaMultiRect(incorrect_rectangles)  # ожидается ошибка
 except RectCorrectError as e:
     print(e)
